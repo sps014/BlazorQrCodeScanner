@@ -1,6 +1,8 @@
+using System.Buffers.Text;
 using System.Text.Json.Serialization;
 using BlazorQrCodeScanner.MediaTrack;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 
 namespace BlazorQrCodeScanner;
@@ -40,8 +42,30 @@ public partial class QrCodeScanner
     [Parameter]
     public EventCallback OnCreated { get; set; }
 
+    /// <summary>
+    /// Called when scanner and camera is started for scanning
+    /// </summary>
     [Parameter]
     public EventCallback OnScannerStarted { get; set; }
+
+
+    /// <summary>
+    /// Called when Camera starting fails
+    /// </summary>
+    [Parameter]
+    public EventCallback<string?> OnScannerStartFailed { get; set; }
+
+    /// <summary>
+    /// Get called when qr scanning is successful
+    /// </summary>
+    [Parameter]
+    public EventCallback<QrCodeScanResult> OnQrSuccess { get; set; }
+
+    /// <summary>
+    /// Get called when QrScan results in error
+    /// </summary>
+    [Parameter]
+    public EventCallback<string?> OnQrScanFailed { get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -55,10 +79,34 @@ public partial class QrCodeScanner
         qrDotnetRuntimeContext = new QrDotnetRuntimeContext();
 
         qrDotnetRuntimeContext.OnScannerStarted += ScannerStarted;
+        qrDotnetRuntimeContext.OnScannerStartFailed += ScannerStartFailed;
+        qrDotnetRuntimeContext.OnQrScanFailed += QrScanFailed;
+        qrDotnetRuntimeContext.OnQrSuccess += QrSuccess;
+
 
         await JSRuntime.InvokeVoidAsync("createScanner", Id);
 
         await OnCreated.InvokeAsync();
+    }
+
+    private void QrScanFailed(object? sender, string? e)
+    {
+        OnQrScanFailed.InvokeAsync(e);
+    }
+
+    private void QrSuccess(object? sender, QrCodeScanResult e)
+    {
+        OnQrSuccess.InvokeAsync(e);
+    }
+    private async void ScannerStarted(object? sender, EventArgs e)
+    {
+        await OnScannerStarted.InvokeAsync();
+        await SetWidthHeightBackgroundOfVideo();
+    }
+
+    private void ScannerStartFailed(object? sender, string? e)
+    {
+        OnScannerStartFailed.InvokeAsync(e);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -67,11 +115,7 @@ public partial class QrCodeScanner
         //await SetWidthHeightBackgroundOfVideo();
     }
 
-    private async void ScannerStarted(object? sender, EventArgs e)
-    {
-        await OnScannerStarted.InvokeAsync();
-        await SetWidthHeightBackgroundOfVideo();
-    }
+
 
     /// <summary>
     /// Start Scanning with cameraId, raises OnScanningStartedEvent
@@ -189,6 +233,31 @@ public partial class QrCodeScanner
         return JSRuntime.InvokeVoidAsync("clearScanner", Id);
     }
 
+    /// <summary>
+    /// Scans an Image File for QR Code.
+    /// This feature is mutually exclusive to camera-based scanning, you should call stop() if the camera-based scanning was ongoing.
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="contentType"></param>
+    /// <returns></returns>
+    public ValueTask ScanFileAsync(byte[] array,string contentType, bool showImage = true)
+    {
+        return JSRuntime.InvokeVoidAsync("scanFileScanner", Id,array,contentType,
+            qrDotnetRuntimeContext.QrDotNetObjectReference,showImage);
+    }
+    /// <summary>
+    /// Scans an Image File for QR Code.
+    /// This feature is mutually exclusive to camera-based scanning, you should call stop() if the camera-based scanning was ongoing.
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="contentType"></param>
+    /// <returns></returns>
+    public ValueTask ScanFileV2Async(byte[] array, string contentType,bool showImage = true)
+    {
+        return JSRuntime.InvokeVoidAsync("scanFileV2Scanner", Id, array, contentType, 
+            qrDotnetRuntimeContext.QrDotNetObjectReference, showImage);
+    }
+
     private ValueTask StartInternalAsync<T>(T mediaTrackConstraintsConfig, QrCodeConfig qrCodeConfig)
     {
         var qrBoxType = GetTypeOfQrBox(qrCodeConfig);
@@ -197,6 +266,7 @@ public partial class QrCodeScanner
                     qrCodeConfig.QrBox, qrBoxType,
                     qrDotnetRuntimeContext.QrDotNetObjectReference);
     }
+
 
     private int GetTypeOfQrBox(QrCodeConfig qrCodeConfig)
     {

@@ -48,6 +48,34 @@ window.getCamerasScanner = () => {
     return Html5Qrcode.getCameras();
 };
 
+window.scanFileScanner = (hash, byteArray,contentType,dotnet) => {
+    // Create a Blob from the byte array
+    const blob = new Blob([byteArray], { type: contentType });
+
+    // Create a File from the Blob
+    const file = new File([blob], "filename.x", { type: contentType });
+
+    window.qrScanners[hash].scanFile(file).then(e => {
+        dotnet.invokeMethodAsync("qrSuccessV1", e);
+    }).catch(e => {
+        dotnet.invokeMethodAsync("qrScanFailed", e);
+    });
+}
+
+window.scanFileV2Scanner = (hash, byteArray, contentType, dotnet) => {
+    // Create a Blob from the byte array
+    const blob = new Blob([byteArray], { type: contentType });
+
+    // Create a File from the Blob
+    const file = new File([blob], "filename.x", { type: contentType });
+
+    window.qrScanners[hash].scanFileV2(file).then(e => {
+        dotnet.invokeMethodAsync("qrSuccess", e);
+    }).catch(e => {
+        dotnet.invokeMethodAsync("qrScanFailed", e);
+    });
+}
+
 window.getRunningTrackSettingsScanner = (hash) => {
     return window.qrScanners[hash].getRunningTrackSettings();
 };
@@ -118,6 +146,7 @@ function processQrBox(qrBoxValue, type) {
     return {};
 }
 
+
 window.setWidthHeightOfVideo = (idRoot, w, h, bgColor) => {
     const video = document.querySelector(`#${idRoot} video`);
 
@@ -134,7 +163,7 @@ window.setWidthHeightOfVideo = (idRoot, w, h, bgColor) => {
 };
 
 function qrCodeSuccessCallback(decodedText, decodedResult) {
-    dotnet.invokeMethodAsync("qrSuccess", decodedText);
+    dotnet.invokeMethodAsync("qrSuccess", { decodedText, result: decodedResult });
 }
 
 window.disposeScanner = (hash) => {
