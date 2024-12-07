@@ -2,7 +2,7 @@
 @using BlazorQrCodeScanner
 @using System.Drawing
 
-<QrCodeScanner @ref="qrCodeScanner" OnCreated="InstanceCreated" Style="width:100%;height:400px"/>
+<QrCodeScanner @ref="qrCodeScanner" OnCreated="InstanceCreated" Height="200px"/>
 
 @code
 {
@@ -16,18 +16,13 @@
 	{
 		qrCodeScanner?.StartAsync(
 			new Dictionary<string, object> { ["facingMode"] = "environment" },
-		new QrCodeConfig()
-			{
-				QrBox = new QrBoxFunction(QrBoxFunc)
-			});
+		new QrCodeConfig());
 	}
 
-	private SizeF QrBoxFunc(SizeF viewPortSize)
-	{
-		double minEdgePercentage = 0.999; // 70%
-		double minEdgeSize = Math.Min(viewPortSize.Width, viewPortSize.Height);
-		int qrboxSize = (int)Math.Floor(minEdgeSize * minEdgePercentage);
-
-		return new(qrboxSize, 150);
-	}
 }
+
+<style>
+	#reader {
+		overflow: hidden !important;
+	}
+</style>

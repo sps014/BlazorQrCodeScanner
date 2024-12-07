@@ -82,7 +82,7 @@ public class QrCodeConfig
     /// scanner will scan the entire area of the video stream.
     /// </summary>
     [JsonIgnore]
-    public IQrBox? QrBox { get; init; } = null;
+    public IQrBox? QrBox { get; set; } = null;
 
     /// <summary>
     /// Optional. Desired aspect ratio for the video feed. Ideal aspect ratios

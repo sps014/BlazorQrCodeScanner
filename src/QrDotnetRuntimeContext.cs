@@ -12,6 +12,8 @@ internal class QrDotnetRuntimeContext:IDisposable
 {
     internal DotNetObjectReference<QrDotnetRuntimeContext> QrDotNetObjectReference;
     internal Func<SizeF, SizeF>? QrBoxFunction;
+
+    public EventHandler? OnScannerStarted;
     public QrDotnetRuntimeContext()
     {
         QrDotNetObjectReference = DotNetObjectReference.Create(this);
@@ -37,7 +39,7 @@ internal class QrDotnetRuntimeContext:IDisposable
     [JSInvokable("qrStarted")]
     public void QrStarted()
     {
-
+        OnScannerStarted?.Invoke(this,EventArgs.Empty);
     }
     [JSInvokable("qrBoxFunc")]
     public SizeF QrBoxFunc(double width,double height)
