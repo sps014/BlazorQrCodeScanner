@@ -81,7 +81,7 @@ public class QrCodeConfig
     /// If this value is not set, no shaded QR box will be rendered and the
     /// scanner will scan the entire area of the video stream.
     /// </summary>
-    [JsonPropertyName("qrbox")]
+    [JsonIgnore]
     public IQrBox? QrBox { get; init; } = null;
 
     /// <summary>
@@ -118,6 +118,32 @@ public class QrCodeConfig
 }
 
 public interface IQrBox;
-public class QrBoxNumber(int Value):IQrBox;
-public class QrBoxSize(SizeF Value) : IQrBox;
-public class QrBoxFunction(Func<SizeF,SizeF> QrBoxFunction):IQrBox;
+public class QrBoxNumber : IQrBox
+{
+    public double Ratio { get; init; } 
+
+    public QrBoxNumber(double ratio)
+    {
+        Ratio = ratio;
+    }
+}
+public class QrBoxSize : IQrBox
+{
+    public double Width { get; set; }
+    public double Height { get; set; }
+
+    public QrBoxSize(double width, double height)
+    {
+        Width = width; Height = height;
+    }
+}
+public class QrBoxFunction:IQrBox
+{
+    public Func<SizeF, SizeF> Function { get; init; }
+
+    public QrBoxFunction(Func<SizeF, SizeF> function)
+    {
+        this.Function = function;
+    }
+}
+

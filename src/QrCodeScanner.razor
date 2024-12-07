@@ -39,12 +39,12 @@
         await JSRuntime.InvokeAsync<IJSObjectReference>("import",
                     "/_content/BlazorQrCodeScanner/html5-qrcode.min.js");
 
-        qrCodeJSObjectReference = await JSRuntime.InvokeAsync<IJSObjectReference>("import",
-                    "/_content/BlazorQrCodeScanner/qrcodeScanner.js");
+        // qrCodeJSObjectReference = await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+        //             "/_content/BlazorQrCodeScanner/qrcodeScanner.js");
 
         qrDotnetRuntimeContext = new QrDotnetRuntimeContext();
 
-        await qrCodeJSObjectReference.InvokeVoidAsync("createScanner", Id);
+        await JSRuntime.InvokeVoidAsync("createScanner", Id);
 
         await OnCreated.InvokeAsync();
     }
@@ -56,8 +56,7 @@
 
     public ValueTask StartAsync(string cameraId, QrCodeConfig qrCodeConfig)
     {
-        return qrCodeJSObjectReference!.InvokeVoidAsync("start", Id, cameraId, qrCodeConfig, GetTypeOfQrBox(qrCodeConfig),
-                    qrDotnetRuntimeContext.QrDotNetObjectReference);
+        return StartInternalAsync(cameraId, qrCodeConfig);
     }
 
     /// <summary>
@@ -66,8 +65,17 @@
     /// <param name="mediaTrackConstraintsConfig">The MediaTrackConstraints dictionary is used to describe a set of capabilities and the value or values each can take on. See https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints</param>
     public ValueTask StartAsync(Dictionary<string, object> mediaTrackConstraintsConfig, QrCodeConfig qrCodeConfig)
     {
-        return qrCodeJSObjectReference!.InvokeVoidAsync("start", Id, mediaTrackConstraintsConfig, qrCodeConfig, GetTypeOfQrBox(qrCodeConfig),
-                   qrDotnetRuntimeContext.QrDotNetObjectReference);
+        return StartInternalAsync(mediaTrackConstraintsConfig, qrCodeConfig);   
+    }
+
+    private ValueTask StartInternalAsync(object mediaTrackConstraintsConfig, QrCodeConfig qrCodeConfig)
+    {
+        if (qrCodeConfig.QrBox is QrBoxFunction func)
+            qrDotnetRuntimeContext.QrBoxFunction = func.Function;
+
+        return JSRuntime!.InvokeVoidAsync("startScanner", Id, mediaTrackConstraintsConfig, qrCodeConfig,
+                    qrCodeConfig.QrBox, GetTypeOfQrBox(qrCodeConfig),
+                    qrDotnetRuntimeContext.QrDotNetObjectReference);
     }
 
     private int GetTypeOfQrBox(QrCodeConfig qrCodeConfig)
@@ -88,7 +96,7 @@
     {
         if (qrCodeJSObjectReference != null)
         {
-            await qrCodeJSObjectReference.InvokeVoidAsync("dispose", Id);
+            await JSRuntime.InvokeVoidAsync("disposeScanner", Id);
             await qrCodeJSObjectReference.DisposeAsync();
         }
         qrDotnetRuntimeContext.Dispose();

@@ -17,9 +17,9 @@
 		qrCodeScanner?.StartAsync(
 			new Dictionary<string, object> { ["facingMode"] = "environment" },
 		new QrCodeConfig()
-		{
-			QrBox= new QrBoxFunction(QrBoxFunc)
-		});
+			{
+				QrBox = new QrBoxFunction(QrBoxFunc)
+			});
 	}
 
 	private SizeF QrBoxFunc(SizeF viewPortSize)
@@ -28,6 +28,6 @@
 		double minEdgeSize = Math.Min(viewPortSize.Width, viewPortSize.Height);
 		int qrboxSize = (int)Math.Floor(minEdgeSize * minEdgePercentage);
 
-		return new (qrboxSize,150);
+		return new(qrboxSize, 150);
 	}
 }

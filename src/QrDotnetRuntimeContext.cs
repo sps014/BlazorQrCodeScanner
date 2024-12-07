@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace BlazorQrCodeScanner;
 internal class QrDotnetRuntimeContext:IDisposable
 {
     internal DotNetObjectReference<QrDotnetRuntimeContext> QrDotNetObjectReference;
+    internal Func<SizeF, SizeF>? QrBoxFunction;
     public QrDotnetRuntimeContext()
     {
         QrDotNetObjectReference = DotNetObjectReference.Create(this);
@@ -37,4 +39,14 @@ internal class QrDotnetRuntimeContext:IDisposable
     {
 
     }
+    [JSInvokable("qrBoxFunc")]
+    public SizeF QrBoxFunc(double width,double height)
+    {
+        if (QrBoxFunction == null)
+            return SizeF.Empty;
+
+        return QrBoxFunction.Invoke(new SizeF((float)width, (float)height));
+    }
+
+
 }
