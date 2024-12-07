@@ -85,12 +85,12 @@ public partial class QrCodeScanner
     /// Start Scanning with MediaTrackConstraints
     /// </summary>
     /// <param name="mediaTrackConstraintsConfig">The MediaTrackConstraints dictionary is used to describe a set of capabilities and the value or values each can take on. See https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints</param>
-    public ValueTask StartAsync(Dictionary<string, object> mediaTrackConstraintsConfig, QrCodeConfig qrCodeConfig)
+    public ValueTask StartAsync(MediaTrackConstraintSet mediaTrackConstraintsConfig, QrCodeConfig qrCodeConfig)
     {
         return StartInternalAsync(mediaTrackConstraintsConfig, qrCodeConfig);
     }
 
-    private ValueTask StartInternalAsync(object mediaTrackConstraintsConfig, QrCodeConfig qrCodeConfig)
+    private ValueTask StartInternalAsync<T>(T mediaTrackConstraintsConfig, QrCodeConfig qrCodeConfig)
     {
         var qrBoxType = GetTypeOfQrBox(qrCodeConfig);
         if (qrCodeConfig.QrBox is QrBoxFunction func)

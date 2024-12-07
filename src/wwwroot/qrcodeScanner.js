@@ -7,6 +7,7 @@ window.createScanner = (id) => {
 
 window.startScanner = (hash, idOrContraintsConfig, config, qrBoxValue, typeOfQrBox, dotnetObjectReference) => {
 
+    console.log(idOrContraintsConfig);
     if (typeOfQrBox != 0)
         config['qrbox'] = processQrBox(qrBoxValue, typeOfQrBox, dotnetObjectReference);
 

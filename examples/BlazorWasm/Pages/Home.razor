@@ -14,8 +14,10 @@
 	}
 	private void InstanceCreated()
 	{
-		qrCodeScanner?.StartAsync(
-			new Dictionary<string, object> { ["facingMode"] = "environment" },
+		qrCodeScanner?.StartAsync(new MediaTrackConstraintSet
+		{
+			FacingMode = VideoFacingMode.Environment
+		},
 		new QrCodeConfig()
 		{
 			QrBox= new QrBoxFunction(QrBoxFunc)
