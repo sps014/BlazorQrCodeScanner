@@ -1,28 +1,63 @@
 ﻿@page "/"
 @using BlazorQrCodeScanner
 @using System.Drawing
+@using BlazorQrCodeScanner.MediaTrack
 
-<QrCodeScanner @ref="qrCodeScanner" OnCreated="InstanceCreated" Height="200px"/>
+<QrCodeScanner @ref="qrCodeScanner" OnCreated="InstanceCreated" OnScannerStarted="ScanStarted" OnQrSuccess="GetResult" />
 
+@* <InputFile OnChange="FileOpen" />
+ *@
 @code
 {
 	private QrCodeScanner? qrCodeScanner;
 
-	protected override Task OnInitializedAsync()
+	protected override async Task OnInitializedAsync()
 	{
-		return base.OnInitializedAsync();
+		if (await Permissions.CheckStatusAsync<Permissions.Camera>()!=PermissionStatus.Granted)
+			await Permissions.RequestAsync<Permissions.Camera>();
+		await base.OnInitializedAsync();
 	}
 	private void InstanceCreated()
 	{
-		qrCodeScanner?.StartAsync(
-			new Dictionary<string, object> { ["facingMode"] = "environment" },
-		new QrCodeConfig());
+		qrCodeScanner.StartAsync(new MediaTrackConstraintSet
+			{
+				FacingMode = VideoFacingMode.Environment
+			}, new QrCodeConfig()
+		{
+			FormatsToSupport =[BarcodeType.QR_CODE],
+			QrBox = new QrBoxSize(400,400)
+		});
+	}
+	private async void FileOpen(InputFileChangeEventArgs e)
+	{
+		using Stream stream = e.File.OpenReadStream(10000000);
+		var buffer = new byte[e.File.Size];
+
+		//read all bytes
+		await stream.ReadAsync(buffer);
+		await qrCodeScanner.ScanFileAsync(buffer, e.File.ContentType);
 	}
 
+	private void GetResult(QrCodeScanResult e)
+	{
+		Console.WriteLine(e.DecodedText);
+	}
+
+	private async void ScanStarted()
+	{
+		var r = await qrCodeScanner!.GetStateAsync();
+
+		// await Task.Delay(500);
+		// await qrCodeScanner.StopAsync();
+
+	}
+
+	private SizeF QrBoxFunc(SizeF viewPortSize)
+	{
+		double minEdgePercentage = 0.999; // 70%
+		double minEdgeSize = Math.Min(viewPortSize.Width, viewPortSize.Height);
+		int qrboxSize = (int)Math.Floor(minEdgeSize * minEdgePercentage);
+
+		return new(qrboxSize, 150);
+	}
 }
-
-<style>
-	#reader {
-		overflow: hidden !important;
-	}
-</style>

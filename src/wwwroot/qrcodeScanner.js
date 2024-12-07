@@ -163,7 +163,7 @@ window.setWidthHeightOfVideo = (idRoot, w, h, bgColor) => {
 };
 
 function qrCodeSuccessCallback(decodedText, decodedResult) {
-    dotnet.invokeMethodAsync("qrSuccess", { decodedText, result: decodedResult });
+    this.invokeMethodAsync("qrSuccessV1", decodedText.toString());
 }
 
 window.disposeScanner = (hash) => {
