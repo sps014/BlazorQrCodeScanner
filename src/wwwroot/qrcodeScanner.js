@@ -7,7 +7,6 @@ window.createScanner = (id) => {
 
 window.startScanner = (hash, idOrContraintsConfig, config, qrBoxValue, typeOfQrBox, dotnetObjectReference) => {
 
-    console.log(idOrContraintsConfig);
     if (typeOfQrBox != 0)
         config['qrbox'] = processQrBox(qrBoxValue, typeOfQrBox, dotnetObjectReference);
 
@@ -20,6 +19,29 @@ window.startScanner = (hash, idOrContraintsConfig, config, qrBoxValue, typeOfQrB
             dotnetObjectReference.invokeMethodAsync("qrStartFailed", e);
         });
 };
+
+window.applyVideoConstraintsScanner = async (hash,constraints) => {
+    await window.qrScanners[hash].applyVideoConstraints(constraints);
+};
+
+window.clearScanner =  (hash) => {
+    window.qrScanners[hash].clear();
+};
+
+window.getStateScanner = (hash) => {
+    return window.qrScanners[hash].getState();
+}
+
+window.pauseScanner = (hash, pauseVideo) => {
+    return window.qrScanners[hash].pause(pauseVideo);
+}
+
+window.resumeScanner = (hash) => {
+    return window.qrScanners[hash].resume();
+}
+window.stopScanner = (hash) => {
+    return window.qrScanners[hash].stop();
+}
 
 function processQrBox(qrBoxValue, type, dotnet) {
     if (type == 1) {

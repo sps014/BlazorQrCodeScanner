@@ -18,6 +18,21 @@ namespace BlazorQrCodeScanner;
 /// <remarks><see href="https://www.w3.org/TR/mediacapture-streams/#dom-mediatrackconstraintset">See the API definition here</see>.</remarks>
 public class MediaTrackConstraintSet
 {
+
+    /// <summary>
+    /// The width, in pixels.
+    /// </summary>
+    [JsonPropertyName("torch")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? Torch { get; set; }
+
+    /// <summary>
+    /// The width, in pixels.
+    /// </summary>
+    [JsonPropertyName("advanced")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public MediaTrackConstraintSet[]? Advanced { get; set; }
+
     /// <summary>
     /// The width, in pixels.
     /// </summary>

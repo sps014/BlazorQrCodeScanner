@@ -2,7 +2,7 @@
 @using BlazorQrCodeScanner
 @using System.Drawing
 
-<QrCodeScanner @ref="qrCodeScanner" OnCreated="InstanceCreated"/>
+<QrCodeScanner @ref="qrCodeScanner" OnCreated="InstanceCreated" OnScannerStarted="ScanStarted"/>
 
 @code
 {
@@ -22,6 +22,17 @@
 		{
 			QrBox= new QrBoxFunction(QrBoxFunc)
 		});
+	}
+
+	private async void ScanStarted()
+	{
+		var r = await qrCodeScanner!.GetStateAsync();
+
+		await Task.Delay(1000);
+		await qrCodeScanner.PauseAsync();
+		var s = await qrCodeScanner.GetStateAsync();
+		await qrCodeScanner.ResumeAsync();
+
 	}
 
 	private SizeF QrBoxFunc(SizeF viewPortSize)

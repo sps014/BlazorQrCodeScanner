@@ -90,6 +90,67 @@ public partial class QrCodeScanner
         return StartInternalAsync(mediaTrackConstraintsConfig, qrCodeConfig);
     }
 
+    /// <summary>
+    /// Applies video constraints on the running video track from the camera.
+    /// 
+    /// <b>Important:
+    /// - Must be called only if the camera-based scanning is in progress.
+    /// - Changing aspectRatio while the scanner is running is not yet supported.</b>
+    /// </summary>
+    public ValueTask ApplyVideoConstraintsAsync(MediaTrackConstraintSet videoConstraintsSet)
+    {
+        return JSRuntime.InvokeVoidAsync("applyVideoConstraintsScanner",Id, videoConstraintsSet);
+    }
+
+    /// <summary>
+    /// Gets state of the camera scan.
+    /// </summary>
+    /// <returns>Enum current state</returns>
+    public async ValueTask<Html5QrcodeScannerState> GetStateAsync()
+    {
+        var r = await JSRuntime.InvokeAsync<int>("getStateScanner", Id);
+        return (Html5QrcodeScannerState)r;
+    }
+
+    /// <summary>
+    /// Pauses the ongoing scan.
+    /// error if method is called when scanner is not in scanning state.
+    /// </summary>
+    /// <param name="pauseVideo"></param>
+    public ValueTask PauseAsync(bool pauseVideo= false)
+    {
+        return JSRuntime.InvokeVoidAsync("pauseScanner", Id,pauseVideo);
+    }
+
+    /// <summary>
+    /// Resume video and scanning , throws error if scanner not in pause state
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask ResumeAsync()
+    {
+        return JSRuntime.InvokeVoidAsync("resumeScanner", Id);
+    }
+
+    /// <summary>
+    /// stop video and scanning , throws error if scanner  in already in stopped state
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask StopAsync()
+    {
+        return JSRuntime.InvokeVoidAsync("stopScanner", Id);
+    }
+
+    /// <summary>
+    /// Clears the existing canvas.
+    /// 
+    /// Note: In case of an ongoing webcam-based scan, it needs to be explicitly closed before calling this method, 
+    /// else it will throw an exception.
+    /// </summary>
+    public ValueTask ClearAsync()
+    {
+        return JSRuntime.InvokeVoidAsync("clearScanner", Id);
+    }
+
     private ValueTask StartInternalAsync<T>(T mediaTrackConstraintsConfig, QrCodeConfig qrCodeConfig)
     {
         var qrBoxType = GetTypeOfQrBox(qrCodeConfig);
@@ -134,4 +195,27 @@ public partial class QrCodeScanner
         qrDotnetRuntimeContext.OnScannerStarted -= ScannerStarted;
         qrDotnetRuntimeContext.Dispose();
     }
+}
+
+public enum Html5QrcodeScannerState
+{
+    /// <summary>
+    /// Invalid internal state, do not set to this state.
+    /// </summary>
+    UNKNOWN = 0,
+
+    /// <summary>
+    /// Indicates the scanning is not running or user is using file-based scanning.
+    /// </summary>
+    NOT_STARTED = 1,
+
+    /// <summary>
+    /// Camera scan is running.
+    /// </summary>
+    SCANNING,
+
+    /// <summary>
+    /// Camera scan is paused but camera is running.
+    /// </summary>
+    PAUSED
 }
