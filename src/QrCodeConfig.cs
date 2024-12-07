@@ -9,6 +9,15 @@ namespace BlazorQrCodeScanner;
 /// </summary>
 public class QrCodeConfig
 {
+
+    /// <summary>
+    /// Set zoom level on supported devices
+    /// </summary>
+    [JsonPropertyName("supportedScanTypes")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Html5QrcodeScanType[]? SupportedScanTypes { get; init; } = null;
+
+
     /// <summary>
     /// Set zoom level on supported devices
     /// </summary>
@@ -168,3 +177,18 @@ public class QrBoxFunction:IQrBox
     }
 }
 
+/// <summary>
+/// Types of scans supported by the library.
+/// </summary>
+public enum Html5QrcodeScanType
+{
+    /// <summary>
+    /// Camera based scanner.
+    /// </summary>
+    SCAN_TYPE_CAMERA = 0,
+
+    /// <summary>
+    /// File based scanner.
+    /// </summary>
+    SCAN_TYPE_FILE = 1
+}
