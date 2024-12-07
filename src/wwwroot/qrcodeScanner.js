@@ -30,17 +30,33 @@ window.clearScanner =  (hash) => {
 
 window.getStateScanner = (hash) => {
     return window.qrScanners[hash].getState();
-}
+};
 
 window.pauseScanner = (hash, pauseVideo) => {
     return window.qrScanners[hash].pause(pauseVideo);
-}
+};
 
 window.resumeScanner = (hash) => {
     return window.qrScanners[hash].resume();
-}
+};
+
 window.stopScanner = (hash) => {
     return window.qrScanners[hash].stop();
+};
+
+window.getCamerasScanner = () => {
+    return Html5Qrcode.getCameras();
+};
+
+window.getRunningTrackSettingsScanner = (hash) => {
+    return window.qrScanners[hash].getRunningTrackSettings();
+};
+
+window.getRunningTrackCapabilitiesScanner=(hash)=>
+{
+    let r = window.qrScanners[hash].getRunningTrackCapabilities();
+    console.log(r);
+    return r;
 }
 
 function processQrBox(qrBoxValue, type, dotnet) {

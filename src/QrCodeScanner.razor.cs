@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using BlazorQrCodeScanner.MediaTrack;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -141,6 +143,33 @@ public partial class QrCodeScanner
     }
 
     /// <summary>
+    /// Get the camera devices list
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<CameraDevice[]> GetCamerasAsync()
+    {
+        return JSRuntime.InvokeAsync<CameraDevice[]>("getCamerasScanner");
+    }
+
+    /// <summary>
+    /// Returns the object containing the current values of each constrainable property of the running video track.
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<MediaTrackSettings> GetRunningTrackSettingsAsync()
+    {
+        return JSRuntime.InvokeAsync<MediaTrackSettings>("getRunningTrackSettingsScanner",Id);
+    }
+
+    /// <summary>
+    /// Returns the capabilities of the running video track.
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<MediaTrackCapabilities> GetRunningTrackCapabilitiesAsync()
+    {
+        return JSRuntime.InvokeAsync<MediaTrackCapabilities>("getRunningTrackCapabilitiesScanner", Id);
+    }
+
+    /// <summary>
     /// Clears the existing canvas.
     /// 
     /// Note: In case of an ongoing webcam-based scan, it needs to be explicitly closed before calling this method, 
@@ -218,4 +247,13 @@ public enum Html5QrcodeScannerState
     /// Camera scan is paused but camera is running.
     /// </summary>
     PAUSED
+}
+
+public class CameraDevice
+{
+    [JsonPropertyName("id")]
+    public string Id { get; set; }
+
+    [JsonPropertyName("label")]
+    public string Label { get; set; }
 }

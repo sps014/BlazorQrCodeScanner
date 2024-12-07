@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using BlazorQrCodeScanner
 @using System.Drawing
+@using BlazorQrCodeScanner.MediaTrack
 
 <QrCodeScanner @ref="qrCodeScanner" OnCreated="InstanceCreated" OnScannerStarted="ScanStarted"/>
 
@@ -29,9 +30,7 @@
 		var r = await qrCodeScanner!.GetStateAsync();
 
 		await Task.Delay(1000);
-		await qrCodeScanner.PauseAsync();
-		var s = await qrCodeScanner.GetStateAsync();
-		await qrCodeScanner.ResumeAsync();
+		var s = await qrCodeScanner.GetRunningTrackSettingsAsync();
 
 	}
 
