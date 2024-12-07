@@ -18,6 +18,7 @@ public class QrCodeConfig
     /// this value.
     /// </summary>
     [JsonPropertyName("formatsToSupport")]
+    [JsonIgnore(Condition =JsonIgnoreCondition.WhenWritingNull)]
     public BarcodeType[]? FormatsToSupport { get; init; } = null;
 
 
@@ -41,6 +42,7 @@ public class QrCodeConfig
     /// Everything is false by default.
     /// </summary>
     [JsonPropertyName("experimentalFeatures")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ExperimentalFeaturesConfig? ExperimentalFeatures {get;init;}
 
     /// <summary>
@@ -55,6 +57,7 @@ public class QrCodeConfig
     /// scanning would be done every 500 ms.
     /// </summary>
     [JsonPropertyName("fps")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? Fps { get;init;} = null;
 
     /// <summary>
@@ -89,8 +92,8 @@ public class QrCodeConfig
     /// are 4:3 or 16:9. Passing an incorrect aspect ratio could lead to the video feed
     /// not showing up.
     /// </summary>
-
     [JsonPropertyName("aspectRatio")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? AspectRatio { get; init; } = null;
 
     /// <summary>
@@ -99,6 +102,7 @@ public class QrCodeConfig
     /// performance constraints.
     /// </summary>
     [JsonPropertyName("disableFlip")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? DisableFlip { get; init; } = null;
 
 
@@ -114,6 +118,7 @@ public class QrCodeConfig
     /// aspectRatio, facingMode, frameRate, etc.
     /// </summary>
     [JsonPropertyName("videoConstraints")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? VideoConstraints { get; init; } = null;
 }
 

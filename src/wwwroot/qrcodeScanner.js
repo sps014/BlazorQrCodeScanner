@@ -7,8 +7,6 @@ window.createScanner = (id) => {
 
 window.startScanner = (hash, idOrContraintsConfig, config, qrBoxValue, typeOfQrBox, dotnetObjectReference) => {
 
-    config = cleanConfig(config);
-
     if (typeOfQrBox != 0)
         config['qrbox'] = processQrBox(qrBoxValue, typeOfQrBox, dotnetObjectReference);
 
@@ -65,21 +63,6 @@ window.setWidthHeightOfVideo = (idRoot, w, h, bgColor) => {
     video.style.setProperty('background-color', bgColor);
 
 };
-
-
-function cleanConfig(config) {
-    let newConfig = {};
-
-    for (let p in config) {
-        if (config[p] == undefined || config[p] == null || config[p]=='qrbox') {
-            continue;
-        }
-        newConfig[p] = config[p];
-    }
-
-
-    return newConfig;
-}
 
 function qrCodeSuccessCallback(decodedText, decodedResult) {
     dotnet.invokeMethodAsync("qrSuccess", decodedText);
