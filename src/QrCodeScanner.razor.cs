@@ -170,6 +170,15 @@ public partial class QrCodeScanner
     }
 
     /// <summary>
+    /// Returns the capabilities of the running video track.
+    /// </summary>
+    /// <returns></returns>
+    public ValueTask<CameraCapabilities> GetRunningTrackCameraCapabilitiesAsync()
+    {
+        return JSRuntime.InvokeAsync<CameraCapabilities>("getRunningTrackCameraCapabilitiesScanner", Id);
+    }
+    
+    /// <summary>
     /// Clears the existing canvas.
     /// 
     /// Note: In case of an ongoing webcam-based scan, it needs to be explicitly closed before calling this method, 
@@ -183,11 +192,6 @@ public partial class QrCodeScanner
     private ValueTask StartInternalAsync<T>(T mediaTrackConstraintsConfig, QrCodeConfig qrCodeConfig)
     {
         var qrBoxType = GetTypeOfQrBox(qrCodeConfig);
-        if (qrCodeConfig.QrBox is QrBoxFunction func)
-        {
-            qrDotnetRuntimeContext.QrBoxFunction = func.Function;
-            qrCodeConfig.QrBox = null;
-        }
 
         return JSRuntime!.InvokeVoidAsync("startScanner", Id, mediaTrackConstraintsConfig, qrCodeConfig,
                     qrCodeConfig.QrBox, qrBoxType,

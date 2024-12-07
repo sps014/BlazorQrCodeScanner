@@ -54,12 +54,54 @@ window.getRunningTrackSettingsScanner = (hash) => {
 
 window.getRunningTrackCapabilitiesScanner=(hash)=>
 {
-    let r = window.qrScanners[hash].getRunningTrackCapabilities();
-    console.log(r);
-    return r;
+    return window.qrScanners[hash].getRunningTrackCapabilities();
+}
+window.getRunningTrackCameraCapabilitiesScanner = (hash) => {
+    let r = window.qrScanners[hash].getRunningTrackCameraCapabilities();
+
+    let torch  = r.torchFeature();
+    let zoom  = r.zoomFeature();
+   
+
+    if (torch.isSupported() && zoom.isSupported())
+    return {
+        torch:
+        {
+            isSupported: torch.isSupported(),
+            value: torch.value()
+        }, zoom:
+        {
+            isSupported: zoom.isSupported(),
+            min: zoom.min(),
+            max: zoom.max(),
+            step: zoom.step()
+        }
+        };
+    else if (zoom.isSupported())
+        return {
+            zoom:
+            {
+                isSupported: zoom.isSupported(),
+                min: zoom.min(),
+                max: zoom.max(),
+                step: zoom.step()
+            }
+        };
+    if (torch.isSupported())
+        return {
+            torch:
+            {
+                isSupported: torch.isSupported(),
+                value: torch.value()
+            }
+        };
+
+
+    return {};
+;
 }
 
-function processQrBox(qrBoxValue, type, dotnet) {
+function processQrBox(qrBoxValue, type) {
     if (type == 1) {
         return qrBoxValue.ratio;
     }
@@ -68,24 +110,12 @@ function processQrBox(qrBoxValue, type, dotnet) {
         return qrBoxValue;
     }
 
+    //contains js function name on window
     else if (type == 3) {
-        return qrBoxFunction.bind(dotnet);
+        return window[qrBoxValue.jSFunctionName];
     }
 
-    return undefined;
-}
-
-function qrBoxFunction(viewportWidth,viewportHeight)
-{
-    let result = {};
-    this.invokeMethodAsync("qrBoxFunc", viewportWidth, viewportHeight).then(e => {
-        result = e;
-    });
-
-    if (result.height == undefined || result.width == undefined)
-        return {};
-
-    return { height: result.height, width: result.width };
+    return {};
 }
 
 window.setWidthHeightOfVideo = (idRoot, w, h, bgColor) => {

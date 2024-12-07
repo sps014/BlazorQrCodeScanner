@@ -10,6 +10,13 @@ namespace BlazorQrCodeScanner;
 public class QrCodeConfig
 {
     /// <summary>
+    /// Set zoom level on supported devices
+    /// </summary>
+    [JsonPropertyName("defaultZoomValueIfSupported")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? DefaultZoomValueIfSupported { get; init; } = null;
+    
+    /// <summary>
     /// Array of formats to support of type <c>BarcodeType</c>.
     /// 
     /// All invalid values will be ignored. If null or undefined, all supported
@@ -142,13 +149,22 @@ public class QrBoxSize : IQrBox
         Width = width; Height = height;
     }
 }
+
+/// <summary>
+/// Call A JS function to evaluate size , function will take viewPortWidth and ViewPortHeight as Parameter,  <b>this function must be exposed on window object</b>
+/// </summary>
 public class QrBoxFunction:IQrBox
 {
-    public Func<SizeF, SizeF> Function { get; init; }
+    [JsonPropertyName("jSFunctionName")]
+    public string JSFunctionName { get; init; }
 
-    public QrBoxFunction(Func<SizeF, SizeF> function)
+    /// <summary>
+    /// Takes JS Window function name that will be used for Qrbox calculation. <b>this function must be exposed on window object</b>
+    /// </summary>
+    /// <param name="jsFunctionNameOnWindowToCall"> <b>this function must be exposed on js window object</b></param>
+    public QrBoxFunction(string jsFunctionNameOnWindowToCall)
     {
-        this.Function = function;
+        this.JSFunctionName = jsFunctionNameOnWindowToCall;
     }
 }
 
