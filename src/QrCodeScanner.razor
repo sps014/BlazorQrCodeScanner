@@ -1,0 +1,96 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<div id="@Id" style="@Style" class="@Class">
+    @ChildContent
+</div>
+
+@code
+{
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public string Id { get; set; } = "reader";
+
+    [Parameter]
+    public string? Style { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private IJSObjectReference? qrCodeJSObjectReference;
+
+    private QrDotnetRuntimeContext qrDotnetRuntimeContext;
+
+    public bool Initialized  { get; private set; } = false;
+
+
+    /// <summary>
+    /// When instance is created for scanner
+    /// </summary>
+    [Parameter]
+    public EventCallback OnCreated { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+                    "/_content/BlazorQrCodeScanner/html5-qrcode.min.js");
+
+        qrCodeJSObjectReference = await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+                    "/_content/BlazorQrCodeScanner/qrcodeScanner.js");
+
+        qrDotnetRuntimeContext = new QrDotnetRuntimeContext();
+
+        await qrCodeJSObjectReference.InvokeVoidAsync("createScanner", Id);
+
+        await OnCreated.InvokeAsync();
+    }
+
+    /// <summary>
+    /// Start Scanning with cameraId, raises OnScanningStartedEvent
+    /// </summary>
+    /// <param name="cameraId">CameraId to use</param>
+
+    public ValueTask StartAsync(string cameraId, QrCodeConfig qrCodeConfig)
+    {
+        return qrCodeJSObjectReference!.InvokeVoidAsync("start", Id, cameraId, qrCodeConfig, GetTypeOfQrBox(qrCodeConfig),
+                    qrDotnetRuntimeContext.QrDotNetObjectReference);
+    }
+
+    /// <summary>
+    /// Start Scanning with MediaTrackConstraints
+    /// </summary>
+    /// <param name="mediaTrackConstraintsConfig">The MediaTrackConstraints dictionary is used to describe a set of capabilities and the value or values each can take on. See https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints</param>
+    public ValueTask StartAsync(Dictionary<string, object> mediaTrackConstraintsConfig, QrCodeConfig qrCodeConfig)
+    {
+        return qrCodeJSObjectReference!.InvokeVoidAsync("start", Id, mediaTrackConstraintsConfig, qrCodeConfig, GetTypeOfQrBox(qrCodeConfig),
+                   qrDotnetRuntimeContext.QrDotNetObjectReference);
+    }
+
+    private int GetTypeOfQrBox(QrCodeConfig qrCodeConfig)
+    {
+        if (qrCodeConfig.QrBox == null)
+            return 0;
+        else if (qrCodeConfig.QrBox is QrBoxNumber)
+            return 1;
+        else if (qrCodeConfig.QrBox is QrBoxSize)
+            return 2;
+        else if (qrCodeConfig.QrBox is QrBoxFunction)
+            return 3;
+
+        throw new NotImplementedException();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (qrCodeJSObjectReference != null)
+        {
+            await qrCodeJSObjectReference.InvokeVoidAsync("dispose", Id);
+            await qrCodeJSObjectReference.DisposeAsync();
+        }
+        qrDotnetRuntimeContext.Dispose();
+    }
+}

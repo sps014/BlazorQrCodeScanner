@@ -1,0 +1,18 @@
+﻿@page "/"
+@using BlazorQrCodeScanner
+
+<QrCodeScanner @ref="qrCodeScanner" OnCreated="InstanceCreated" Style="width:100%;height:400px"/>
+
+@code
+{
+	private QrCodeScanner qrCodeScanner;
+
+	protected override Task OnInitializedAsync()
+	{
+		return base.OnInitializedAsync();
+	}
+	private void InstanceCreated()
+	{
+		qrCodeScanner.StartAsync(new Dictionary<string, object> { ["facingMode"] = "environment" }, new QrCodeConfig());
+	}
+}
