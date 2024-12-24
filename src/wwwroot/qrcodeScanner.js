@@ -7,11 +7,17 @@ window.createScanner = (id) => {
 
 window.startScanner = (hash, idOrContraintsConfig, config, qrBoxValue, typeOfQrBox, dotnetObjectReference) => {
 
-    if (typeOfQrBox != 0)
+    if (typeOfQrBox !== 0)
         config['qrbox'] = processQrBox(qrBoxValue, typeOfQrBox, dotnetObjectReference);
+    
+    let regionHeight = 150;
+    if(config['qrbox']!==undefined && config['qrbox'].height!==undefined)
+    {
+        regionHeight = config['qrbox'].height;
+    }
 
     window.qrScanners[hash]
-        .start(idOrContraintsConfig, config, qrCodeSuccessCallback.bind(dotnetObjectReference))
+        .start(idOrContraintsConfig, config, qrCodeSuccessCallback.bind({dotnet:dotnetObjectReference,regionHeight}))
         .then(() => {
             dotnetObjectReference.invokeMethodAsync("qrStarted");
         })
@@ -130,16 +136,16 @@ window.getRunningTrackCameraCapabilitiesScanner = (hash) => {
 }
 
 function processQrBox(qrBoxValue, type) {
-    if (type == 1) {
+    if (type === 1) {
         return qrBoxValue.ratio;
     }
     //2 dimensional size
-    else if (type == 2) {
+    else if (type === 2) {
         return qrBoxValue;
     }
 
     //contains js function name on window
-    else if (type == 3) {
+    else if (type === 3) {
         return window[qrBoxValue.jSFunctionName];
     }
 
@@ -150,21 +156,55 @@ function processQrBox(qrBoxValue, type) {
 window.setWidthHeightOfVideo = (idRoot, w, h, bgColor) => {
     const video = document.querySelector(`#${idRoot} video`);
 
-    if (video == undefined || video==null)
+    if (video === undefined || video==null)
         return;
 
     video.style.width = w;
     video.style.height = h;
-
-    console.log(w,h);
-
+    
     video.style.setProperty('background-color', bgColor);
 
 };
 
 function qrCodeSuccessCallback(decodedText, decodedResult) {
-    this.invokeMethodAsync("qrSuccessV1", decodedText.toString());
+    getScannedImageUrl(this.dotnet,decodedText.toString(),this.regionHeight);
 }
+function getScannedImageUrl(dotnet,decodedText,regionHeight)
+{
+    let video = document.querySelector("video");
+    let canvas = document.createElement("canvas");
+    let width = video.videoWidth;
+    let height = video.videoHeight;
+    let context = canvas.getContext("2d");
+    
+    if(!regionHeight)
+        regionHeight = 150;
+
+    canvas.width = width;
+    canvas.height = regionHeight;
+
+    let starty = height / 2 - regionHeight / 2;
+    
+    context.drawImage(
+        video,
+        0,
+        starty,
+        width,
+        regionHeight,
+        0,
+        0,
+        width,
+        regionHeight
+    );
+
+
+    canvas.toBlob(function (blob) {
+        const href = URL.createObjectURL(blob);
+        dotnet.invokeMethodAsync("qrSuccessV1", decodedText, href);
+    }, "image/png");
+}
+
+
 
 window.disposeScanner = (hash) => {
     window.qrScanners[hash].stop();

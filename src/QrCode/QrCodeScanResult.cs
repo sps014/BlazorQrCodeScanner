@@ -14,6 +14,8 @@ public class QrCodeScanResult
 
     [JsonPropertyName("result")]
     public ResultData? Result { get; set; }
+    
+    public string? ImageUrl { get; set; }
 }
 
 public class ResultData

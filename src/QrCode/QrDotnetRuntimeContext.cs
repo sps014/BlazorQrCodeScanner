@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -17,8 +18,12 @@ internal class QrDotnetRuntimeContext:IDisposable
 
     public EventHandler<QrCodeScanResult>? OnQrSuccess;
     public EventHandler<string?>? OnQrScanFailed;
-
-
+    
+    [DynamicDependency(nameof(QrSuccess))]
+    [DynamicDependency(nameof(QrSuccessV1))]
+    [DynamicDependency(nameof(QrScanFailed))]
+    [DynamicDependency(nameof(QrStartFailed))]
+    [DynamicDependency(nameof(QrStarted))]
     public QrDotnetRuntimeContext()
     {
         QrDotNetObjectReference = DotNetObjectReference.Create(this);
@@ -30,11 +35,12 @@ internal class QrDotnetRuntimeContext:IDisposable
     }
 
     [JSInvokable("qrSuccessV1")]
-    public void QrSuccess(string scannedResult)
+    public void QrSuccessV1(string scannedResult,string imageUrl)
     {
         OnQrSuccess?.Invoke(this, new QrCodeScanResult()
         {
-            DecodedText = scannedResult
+            DecodedText = scannedResult,
+            ImageUrl = imageUrl
         });
     }
     [JSInvokable("qrSuccess")]
