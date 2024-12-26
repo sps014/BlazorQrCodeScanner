@@ -1,9 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Title>BlazorQrCodeScanner</Title>
+    <Authors>sps014</Authors>
+    <Description>QrCode and Barcode scanning in MAUI blazor, Blazor wasm, Blazor server</Description>
+    <PackageProjectUrl>https://github.com/sps014/BlazorQrCodeScanner/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sps014/BlazorQrCodeScanner/</RepositoryUrl>
   </PropertyGroup>
 
 
@@ -12,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.*" />
   </ItemGroup>
 
 </Project>
