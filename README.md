@@ -120,7 +120,7 @@ window.calculateBoundingBox= function (viewfinderWidth, viewfinderHeight) {
 - **Width** (`string`): Width of the video element. Default is "600px".
 - **Height** (`string`): Height of the video element. Default is "600px".
 - **VideoBackground** (`string`): Background color of the video element. Default is "black".
-- **ChildContent** (`RenderFragment?`): Child content to render inside the component.
+- **ChildContent** (`RenderFragment?`): Child content to render inside the component. (Customize Crosshair as per your need)
 
 ## Events
 
