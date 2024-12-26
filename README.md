@@ -1,6 +1,6 @@
 # BlazorQrCodeScanner
  
-The `QrCodeScanner` component is a Blazor component for scanning QR codes using a webcam or an image file in WASM, Server and on MAUI Blazor.
+The `QrCodeScanner` component is a Blazor component for scanning QR codes using a webcam or an image file in Blazor WASM, Server and on MAUI Hybrid.
 It is build on Top of [html5-qrcode](https://github.com/mebjas/html5-qrcode). It is fully customizable and can use NativeBarcode API on supported devices on Android.
 
 
@@ -9,6 +9,15 @@ It is build on Top of [html5-qrcode](https://github.com/mebjas/html5-qrcode). It
 | Blazor WASM    |       ✔️      |
 | Blazor Server  |       ✔️      |
 | MAUI Blazor    |       ✔️      |
+
+
+## Install
+
+1. Via [Nuget Package Manager](https://www.nuget.org/packages/BlazorQrCodeScanner) <br>
+2. Via Command Line
+```
+dotnet add package BlazorQrCodeScanner
+```
 
 ## Samples
 ```razor
