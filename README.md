@@ -218,7 +218,7 @@ Clears the existing canvas.
 public ValueTask ScanFileAsync(byte[] array, string contentType, bool showImage = true)
 ```
 
-Scans an image file for a QR code.
+Scans an image file for a QR code. (will fail if webcam scanning is running)
 
 ### ScanFileV2Async
 
@@ -226,7 +226,7 @@ Scans an image file for a QR code.
 public ValueTask ScanFileV2Async(byte[] array, string contentType, bool showImage = true)
 ```
 
-Scans an image file for a QR code (version 2).
+Scans an image file for a QR code (version 2).  (will fail if webcam scanning is running)
 
 ## Disposal
 
