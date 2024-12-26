@@ -7,7 +7,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorQrCodeScanner;
 
-public partial class QrCodeScanner
+public partial class QrCodeScanner:ComponentBase,IAsyncDisposable
 {
     [Parameter]
     public string? Class { get; set; }
@@ -67,7 +67,7 @@ public partial class QrCodeScanner
     [Parameter]
     public EventCallback<string?> OnQrScanFailed { get; set; }
 
-
+    private bool onStartedCamera = false;
     protected override async Task OnInitializedAsync()
     {
         await JSRuntime.InvokeAsync<IJSObjectReference>("import",
@@ -85,7 +85,6 @@ public partial class QrCodeScanner
 
 
         await JSRuntime.InvokeVoidAsync("createScanner", Id);
-
         await OnCreated.InvokeAsync();
     }
 
@@ -100,6 +99,7 @@ public partial class QrCodeScanner
     }
     private async void ScannerStarted(object? sender, EventArgs e)
     {
+        onStartedCamera = true;
         await OnScannerStarted.InvokeAsync();
         await SetWidthHeightBackgroundOfVideo();
     }
@@ -109,13 +109,18 @@ public partial class QrCodeScanner
         OnScannerStartFailed.InvokeAsync(e);
     }
 
-    protected override async Task OnParametersSetAsync()
+    public override async Task SetParametersAsync(ParameterView parameters)
     {
-        await base.OnParametersSetAsync();
-        //await SetWidthHeightBackgroundOfVideo();
+        foreach (var parameter in parameters)
+        {
+            if (onStartedCamera && (parameter.Name == nameof(Width) || parameter.Name == nameof(Height) ||
+                parameter.Name == nameof(VideoBackground)))
+            {
+                 SetWidthHeightBackgroundOfVideo().ConfigureAwait(false);
+            }
+        }
+        await base.SetParametersAsync(parameters);
     }
-
-
 
     /// <summary>
     /// Start Scanning with cameraId, raises OnScanningStartedEvent

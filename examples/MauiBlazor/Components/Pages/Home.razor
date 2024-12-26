@@ -29,7 +29,7 @@
 	}
 	private void InstanceCreated()
 	{
-		qrCodeScanner.StartAsync(new MediaTrackConstraintSet
+		qrCodeScanner?.StartAsync(new MediaTrackConstraintSet
 			{
 				FacingMode = VideoFacingMode.Environment
 			}, new QrCodeConfig()
@@ -39,7 +39,9 @@
 			ExperimentalFeatures = new ExperimentalFeaturesConfig()
 			{
 				UseBarCodeDetectorIfSupported = true
-			}
+			},
+			DefaultZoomValueIfSupported = 2,
+			Fps = 10
 		});
 	}
 

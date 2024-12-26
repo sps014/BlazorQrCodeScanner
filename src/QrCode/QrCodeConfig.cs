@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using BlazorQrCodeScanner.MediaTrack;
 
 namespace BlazorQrCodeScanner;
 
@@ -48,8 +49,9 @@ public class QrCodeConfig
     ///  - https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector
     ///  - https://web.dev/shape-detection/#barcodedetector
     /// </summary>
+    [JsonIgnore(Condition =JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("useBarCodeDetectorIfSupported")]
-    public bool UseBarCodeDetectorIfSupported { get; init; } = true;
+    public bool? UseBarCodeDetectorIfSupported { get; init; } = true;
 
     /// <summary>
     /// Configuration for experimental features.
@@ -62,8 +64,9 @@ public class QrCodeConfig
     /// <summary>
     /// If true, all logs will be printed to the console. False by default.
     /// </summary>
+    [JsonIgnore(Condition =JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("verbose")]
-    public bool Verbose { get;init;} = false;
+    public bool? Verbose { get;init;} = false;
 
 
     /// <summary>
@@ -133,7 +136,7 @@ public class QrCodeConfig
     /// </summary>
     [JsonPropertyName("videoConstraints")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public object? VideoConstraints { get; init; } = null;
+    public MediaTrackConstraintSet? VideoConstraints { get; init; } = null;
 }
 
 public interface IQrBox;
@@ -158,7 +161,7 @@ public class QrBoxSize : IQrBox
 }
 
 /// <summary>
-/// Call A JS function to evaluate size , function will take viewPortWidth and ViewPortHeight as Parameter,  <b>this function must be exposed on window object</b>
+/// Call A JS function to evaluate size , function will take viewPortWidth and ViewPortHeight as Parameter,  <b>this function must be exposed on JS global window object</b>
 /// </summary>
 public class QrBoxFunction:IQrBox
 {

@@ -207,7 +207,12 @@ function getScannedImageUrl(dotnet,decodedText,regionHeight)
 
 
 window.disposeScanner = (hash) => {
-    window.qrScanners[hash].stop();
+    try {
+        window.qrScanners[hash].stop();
+    }
+    catch (e){
+        console.warn(e);
+    }
     delete window.qrScanners[hash];
 };
 
