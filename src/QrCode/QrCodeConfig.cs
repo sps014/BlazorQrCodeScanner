@@ -1,6 +1,4 @@
-using System.Drawing;
 using System.Text.Json.Serialization;
-using Microsoft.JSInterop;
 
 namespace BlazorQrCodeScanner;
 

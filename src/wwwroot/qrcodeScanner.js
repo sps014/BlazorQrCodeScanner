@@ -179,16 +179,16 @@ function getScannedImageUrl(dotnet,decodedText,regionHeight)
     
     if(!regionHeight)
         regionHeight = 150;
-
+    
     canvas.width = width;
     canvas.height = regionHeight;
 
-    let starty = height / 2 - regionHeight / 2;
+    let startY = height / 2 - regionHeight / 2;
     
     context.drawImage(
         video,
         0,
-        starty,
+        startY,
         width,
         regionHeight,
         0,
