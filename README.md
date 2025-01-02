@@ -18,71 +18,35 @@ It is build on Top of [html5-qrcode](https://github.com/mebjas/html5-qrcode). It
 ```
      dotnet add package BlazorQrCodeScanner
 ```
+for MAUI blazor add this package along side
+```
+     dotnet add package BlazorQrCodeScanner.Maui
+```
 
 import this in head of wwwroot/index.html
 ```html
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 ```
 
-### MAUI Android Setup
-* For MAUI Android camera permissions will be required to be added in Android Mainfest file and create a ChromeWebClient in Platforms/Android/Handlers folder
+### MAUI Setup
+* For MAUI Android camera permissions will be required to be added in Android Mainfest file 
   
 ```xml
     <uses-permission android:name="android.permission.CAMERA" />
  ```
 
-Platforms/Android/Handlers/CurrentWebChromeClient.cs
+for iOS camera permission refer [wiki](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/maui/views/camera-view?tabs=ios)
 
+
+Now register Library in MauiProgram
 ```cs
-﻿using Android.Webkit;
-using Microsoft.AspNetCore.Components.WebView.Maui;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MauiBlazor.Platforms.Android.Handlers
-{
-    internal class CurrentWebChromeClient: WebChromeClient
-    {
-        public override void OnPermissionRequest(PermissionRequest request)
-        {
-            try
-            {
-                request.Grant(request.GetResources());
-                base.OnPermissionRequest(request);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-        }
-    }
-    public class MauiBlazorWebViewHandler : BlazorWebViewHandler
-    {
-        protected override global::Android.Webkit.WebView CreatePlatformView()
-        {
-            var view = base.CreatePlatformView();
-
-            view.SetWebChromeClient(new CurrentWebChromeClient());
-
-            return view;
-        }
-    }
-
-}
-```
-
-Now register this client for android in MauiPrograms
-```cs
-.ConfigureMauiHandlers(handlers =>
-{
-#if ANDROID
-     handlers.AddHandler<BlazorWebView, MauiBlazorWebViewHandler>();
-#endif
-};
+                 builder
+                .UseMauiApp<App>()
+                .ConfigureFonts(fonts =>
+                {
+                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                })
+                .ConfigureMauiQrCodeScanner(); //add this line
 ```
 
 
