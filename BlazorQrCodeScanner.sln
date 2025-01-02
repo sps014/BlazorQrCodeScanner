@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorQrCodeScanner", "src\BlazorQrCodeScanner.csproj", "{A4B196DA-9B6A-4DD9-B868-500EE987411D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorQrCodeScanner", "src\QrCodeScanner\BlazorQrCodeScanner.csproj", "{A4B196DA-9B6A-4DD9-B868-500EE987411D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{632483FE-D0CC-489C-B398-9CEFE3F71420}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWasm", "examples\BlazorWasm\BlazorWasm.csproj", "{A6839447-17A2-4B79-BA38-604FE72C5178}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiBlazor", "examples\MauiBlazor\MauiBlazor.csproj", "{E860B8FA-DF43-40C1-A10E-06CD58B79470}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorQrCodeScanner.Maui", "src\QrCodeScanner.Maui\BlazorQrCodeScanner.Maui.csproj", "{2C179746-7FBE-4512-B326-4DB1A12EC8FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{E860B8FA-DF43-40C1-A10E-06CD58B79470}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E860B8FA-DF43-40C1-A10E-06CD58B79470}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E860B8FA-DF43-40C1-A10E-06CD58B79470}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C179746-7FBE-4512-B326-4DB1A12EC8FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C179746-7FBE-4512-B326-4DB1A12EC8FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C179746-7FBE-4512-B326-4DB1A12EC8FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C179746-7FBE-4512-B326-4DB1A12EC8FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

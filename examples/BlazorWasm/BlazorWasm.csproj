@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BlazorQrCodeScanner.csproj" />
+    <ProjectReference Include="..\..\src\QrCodeScanner\BlazorQrCodeScanner.csproj" />
   </ItemGroup>
 
 </Project>

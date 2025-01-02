@@ -301,6 +301,10 @@ public partial class QrCodeScanner:ComponentBase,IAsyncDisposable
         }
 
         qrDotnetRuntimeContext.OnScannerStarted -= ScannerStarted;
+        qrDotnetRuntimeContext.OnScannerStartFailed -= ScannerStartFailed;
+        qrDotnetRuntimeContext.OnQrScanFailed -= QrScanFailed;
+        qrDotnetRuntimeContext.OnQrSuccess -= QrSuccess;
+        
         qrDotnetRuntimeContext.Dispose();
     }
 }
