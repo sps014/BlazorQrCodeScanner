@@ -40,13 +40,15 @@ for iOS camera permission refer [wiki](https://learn.microsoft.com/en-us/dotnet/
 
 Now register Library in MauiProgram
 ```cs
-                 builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                })
-                .ConfigureMauiQrCodeScanner(); //add this line
+    using BlazorQrCodeScanner.Maui;
+
+    builder
+     .UseMauiApp<App>()
+     .ConfigureFonts(fonts =>
+     {
+           fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+     })
+      .ConfigureMauiQrCodeScanner(); //add this line
 ```
 
 
