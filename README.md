@@ -35,7 +35,13 @@ import this in head of wwwroot/index.html
     <uses-permission android:name="android.permission.CAMERA" />
  ```
 
-for iOS camera permission refer [wiki](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/maui/views/camera-view?tabs=ios)
+for iOS set camera permission in `Platforms/iOS/Info.plist`
+ 
+
+```xml
+   <key>NSCameraUsageDescription</key>
+<string>PROVIDE YOUR REASON HERE</string>
+```
 
 
 Now register Library in MauiProgram
