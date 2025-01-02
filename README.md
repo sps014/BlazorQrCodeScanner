@@ -16,8 +16,75 @@ It is build on Top of [html5-qrcode](https://github.com/mebjas/html5-qrcode). It
 1. Via [Nuget Package Manager](https://www.nuget.org/packages/BlazorQrCodeScanner) <br>
 2. Via Command Line
 ```
-dotnet add package BlazorQrCodeScanner
+     dotnet add package BlazorQrCodeScanner
 ```
+
+import this in head of wwwroot/index.html
+```html
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+```
+
+### MAUI Android Setup
+* For MAUI Android camera permissions will be required to be added in Android Mainfest file and create a ChromeWebClient in Platforms/Android/Handlers folder
+  
+```xml
+    <uses-permission android:name="android.permission.CAMERA" />
+ ```
+
+Platforms/Android/Handlers/CurrentWebChromeClient.cs
+
+```cs
+﻿using Android.Webkit;
+using Microsoft.AspNetCore.Components.WebView.Maui;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MauiBlazor.Platforms.Android.Handlers
+{
+    internal class CurrentWebChromeClient: WebChromeClient
+    {
+        public override void OnPermissionRequest(PermissionRequest request)
+        {
+            try
+            {
+                request.Grant(request.GetResources());
+                base.OnPermissionRequest(request);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+    }
+    public class MauiBlazorWebViewHandler : BlazorWebViewHandler
+    {
+        protected override global::Android.Webkit.WebView CreatePlatformView()
+        {
+            var view = base.CreatePlatformView();
+
+            view.SetWebChromeClient(new CurrentWebChromeClient());
+
+            return view;
+        }
+    }
+
+}
+```
+
+Now register this client for android in MauiPrograms
+```cs
+.ConfigureMauiHandlers(handlers =>
+{
+#if ANDROID
+     handlers.AddHandler<BlazorWebView, MauiBlazorWebViewHandler>();
+#endif
+};
+```
+
 
 ## Samples
 ```razor
@@ -88,8 +155,9 @@ dotnet add package BlazorQrCodeScanner
     /// <summary>
     /// Called when the scanner starts.
     /// </summary>
-    private void OnScanStarted()
+    private async void OnScanStarted()
     {
+        await Task.Delay(500); // let camera element in dom get created
         isScannerStarted = true;
         StateHasChanged();
     }
