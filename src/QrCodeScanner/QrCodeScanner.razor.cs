@@ -9,6 +9,8 @@ namespace BlazorQrCodeScanner;
 
 public partial class QrCodeScanner:ComponentBase,IAsyncDisposable
 {
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
     [Parameter]
     public string? Class { get; set; }
 
@@ -70,11 +72,13 @@ public partial class QrCodeScanner:ComponentBase,IAsyncDisposable
     private bool onStartedCamera = false;
     protected override async Task OnInitializedAsync()
     {
-        await JSRuntime.InvokeAsync<IJSObjectReference>("import",
-                    "/_content/BlazorQrCodeScanner/html5-qrcode.min.js");
+        var baseUri = NavigationManager.BaseUri;
 
         await JSRuntime.InvokeAsync<IJSObjectReference>("import",
-                    "/_content/BlazorQrCodeScanner/qrcodeScanner.js");
+                    $"{baseUri}_content/BlazorQrCodeScanner/html5-qrcode.min.js");
+
+        await JSRuntime.InvokeAsync<IJSObjectReference>("import",
+                    $"{baseUri}_content/BlazorQrCodeScanner/qrcodeScanner.js");
 
         qrDotnetRuntimeContext = new QrDotnetRuntimeContext();
 
